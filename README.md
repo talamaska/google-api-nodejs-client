@@ -7,9 +7,10 @@
 [![Code Coverage][codecovimg]][codecov]
 [![Downloads][downloadsimg]][downloads]
 
-Google's officially supported [Node.js][node] client library for using Google
-APIs. Support for authorization and authentication with OAuth 2.0, API Keys and
-JWT (Service Tokens) is included.
+[Node.js][node] client library for using Google APIs. Support for authorization and authentication with OAuth 2.0, API Keys and JWT (Service Tokens) is included.
+
+## Library maintenance
+This client library is supported but in maintenance mode only.  We are fixing necessary bugs and adding essential features to ensure this library continues to meet your needs for accessing Google APIs.  Non-critical issues will be closed.  Any issue may be reopened if it is causing ongoing problems.
 
 ## Table of Contents
 
@@ -74,11 +75,11 @@ The full list of supported APIs can be found [here][supported-list]. The API end
 ### Working with Google Cloud Platform APIs?
 
 If you're working with [Google Cloud Platform][cloudplatform] APIs such as
-Datastore, Cloud Storage or Pub/Sub, consider using [`gcloud`][gcloud], an
+Datastore, Cloud Storage or Pub/Sub, consider using the [`google-cloud`][googlecloud] package, an
 idiomatic Node.js client for Google Cloud Platform services.
 
-You can find the list of Google Cloud Platform APIs supported by gcloud in the
-[gcloud docs][gcloudapis].
+You can find the list of Google Cloud Platform APIs supported by google-cloud in the
+[google-cloud docs][googlecloudapis].
 
 ## Installation
 
@@ -169,10 +170,16 @@ var url = oauth2Client.generateAuthUrl({
   // 'online' (default) or 'offline' (gets refresh_token)
   access_type: 'offline',
 
-  // If you only need one scope you can pass it as string
-  scope: scopes
+  // If you only need one scope you can pass it as a string
+  scope: scopes,
+
+  // Optional property that passes state parameters to redirect URI
+  // state: { foo: 'bar' }
 });
 ```
+##### IMPORTANT NOTE
+`refresh_token` is only returned on the first authorization.  
+ More details [here](https://github.com/google/google-api-nodejs-client/issues/750#issuecomment-304521450)
 
 ##### Retrieve authorization code
 
@@ -321,7 +328,7 @@ To learn more about API keys, please see the [documentation][usingkeys].
 
 #### Using JWT (Service Tokens)
 
-The Google Developers Console provides `.json` file that you can use to configure a JWT auth client and authenticate your requests.
+The Google Developers Console provides `.json` file that you can use to configure a JWT auth client and authenticate your requests, for example when using a service account.
 
 ``` js
 var key = require('/path/to/key.json');
@@ -329,7 +336,7 @@ var jwtClient = new google.auth.JWT(
   key.client_email,
   null,
   key.private_key,
-  [scope1, scope2],
+  ['https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/calendar'], // an array of auth scopes
   null
 );
 
@@ -632,8 +639,8 @@ See [CONTRIBUTING][contributing].
 [oauth]: https://developers.google.com/identity/protocols/OAuth2
 [oauthexample]: https://github.com/google/google-api-nodejs-client/tree/master/samples/oauth2.js
 [options]: https://github.com/google/google-api-nodejs-client/tree/master#options
-[gcloud]: https://github.com/GoogleCloudPlatform/gcloud-node
-[gcloudapis]: https://googlecloudplatform.github.io/gcloud-node/#/docs/gcloud
+[googlecloud]: https://github.com/GoogleCloudPlatform/google-cloud-node
+[googlecloudapis]: https://googlecloudplatform.github.io/google-cloud-node/#/docs/google-cloud
 [cloudplatform]: https://cloud.google.com/docs/
 [codecovimg]: https://codecov.io/github/google/google-api-nodejs-client/coverage.svg?branch=master
 [codecov]: https://codecov.io/github/google/google-api-nodejs-client?branch=master
